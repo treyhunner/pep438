@@ -1,11 +1,10 @@
-import pep438
 from setuptools import setup, find_packages
 
 
 setup(
-    name=pep438.__title__,
-    version=pep438.__version__,
-    author=pep438.__author__,
+    name='pep438',
+    version='0.1.0',
+    author='Trey Hunner',
     url="https://github.com/treyhunner/pep438",
     description="Check your requirements for proper PEP 438 usage.",
     long_description='\n\n'.join((
@@ -17,6 +16,12 @@ setup(
     packages=find_packages(),
     py_modules=['pep438'],
     include_package_data=True,
+    install_requires=[
+        'reqfile-parser',
+        'clint',
+        'requests',
+        'lxml',
+    ],
     entry_points={
         'console_scripts': [
             'pep438 = pep438:main',

@@ -1,9 +1,10 @@
 from setuptools import setup, find_packages
+import pep438
 
 
 setup(
     name='pep438',
-    version='0.1.0',
+    version=pep438.__version__,
     author='Trey Hunner',
     url="https://github.com/treyhunner/pep438",
     description="Check your requirements for proper PEP 438 usage.",
@@ -24,7 +25,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'pep438 = pep438:main',
+            'pep438 = pep438.main:main',
         ],
     },
     classifiers=[

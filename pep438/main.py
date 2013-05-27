@@ -1,34 +1,19 @@
-#!/usr/bin/env python
+"""Command-line interface for pep438 command"""
 from __future__ import print_function, unicode_literals
 import sys
 from getopt import getopt, GetoptError
 
-import requests
-import lxml.html
 from clint import piped_in
 from clint.textui import puts, columns, indent
 from clint.textui.core import STDOUT, STDERR
 from clint.textui.colored import green, red, blue
-from reqfileparser import parse
 
-
-def get_links(package_name):
-    """Return list of links on package's PyPI page"""
-    response = requests.get('https://pypi.python.org/simple/%s' % package_name)
-    response.raise_for_status()
-    page = lxml.html.fromstring(response.content)
-    external_links = [link for link in page.xpath('//a')
-                      if not link.get('href').startswith('../')]
-    return external_links
-
-
-def get_pypi_packages(fileobj):
-    """Return all PyPI-hosted packages from file-like object"""
-    return [p['name'] for p in parse(fileobj) if not p.get('uri')]
+from . import __version__
+from .core import get_links, get_pypi_packages
 
 
 def version():
-    print('0.1.0')  # TODO Abstract this out
+    print("pep438 version %s" % __version__)
 
 
 def usage(error=False):
@@ -72,7 +57,7 @@ def main():
 
     packages = []
     args = sys.argv[1:]
-    input_lines = piped_in()
+    input_lines = None and piped_in()
 
     try:
         opts, pkgs = getopt(args, "vhr:", ["version", "help", "requirement"])
@@ -96,7 +81,3 @@ def main():
         links = get_links(package)
         symbol = red('\u2717') if links else green('\u2713')
         print("%s %s: %s links" % (symbol, blue(package), len(links)))
-
-
-if __name__ == "__main__":
-    main()

@@ -4,7 +4,8 @@ import sys
 from io import StringIO
 
 from clint.textui import core
-import pep438
+from pep438 import __version__
+from pep438.main import main
 
 
 class patch_io(object):
@@ -39,8 +40,9 @@ class CommandLineTests(unittest.TestCase):
         for args in (['pep438', '-v'], ['pep438', '--version']):
             with patch_io() as new:
                 sys.argv = args
-                self.assertRaises(SystemExit, pep438.main)
-                self.assertEqual(new.stdout.getvalue(), "0.1.0\n")
+                self.assertRaises(SystemExit, main)
+                self.assertEqual(new.stdout.getvalue(),
+                                 "pep438 version %s\n" % __version__)
 
 
 if __name__ == '__main__':

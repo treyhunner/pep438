@@ -13,6 +13,8 @@ pep438
 
 Check packages in your requirements file for proper usage of the `PEP 438`_ tools.
 
+This `online PEP 438 checker`_ is also great.
+
 Installation
 ------------
 
@@ -64,3 +66,4 @@ This project is released under an `MIT License`_.
 .. _pep 438: http://www.python.org/dev/peps/pep-0438/
 .. _mit license: http://th.mit-license.org/2013
 .. _available on PyPI: http://pypi.python.org/pypi/pep438/
+.. _online pep438 checker: http://pypi-externals.caremad.io/

@@ -67,9 +67,10 @@ def process_options(options):
     return packages
 
 
-def main(args):
+def main():
 
     packages = []
+    args = sys.argv[1:]
     input_lines = piped_in()
 
     try:
@@ -97,4 +98,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()

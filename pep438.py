@@ -76,7 +76,7 @@ def main():
     try:
         opts, pkgs = getopt(args, "vhr:", ["version", "help", "requirement"])
     except GetoptError as e:
-        puts(unicode(e), stream=STDERR)
+        puts(str(e), stream=STDERR)
         usage(error=True)
         sys.exit(2)
 

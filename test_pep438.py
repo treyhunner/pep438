@@ -9,7 +9,7 @@ from mock import Mock, patch
 from clint.textui import core
 from pep438 import __version__
 from pep438.main import main
-from pep438.core import get_links
+from pep438.core import get_urls
 
 
 class patch_io(object):
@@ -62,7 +62,7 @@ class TestValidPackage(unittest.TestCase):
             self.assertRaises(HTTPError, valid_package, 'dummy_package')
 
 
-class TestGetLinks(unittest.TestCase):
+class TestGetURLs(unittest.TestCase):
 
     def get_link(self, href, rel=None):
         if rel:
@@ -80,48 +80,48 @@ class TestGetLinks(unittest.TestCase):
     def test_download_link(self, get):
         get.side_effect = lambda *args: self.get_response(
             ['test', "download"], ['../'])
-        self.assertEqual(get_links('package'), {'test'})
+        self.assertEqual(get_urls('package'), {'test'})
 
     @patch('pep438.core.requests.get')
     def test_homepage_link(self, get):
         get.side_effect = lambda *args: self.get_response(
             ['test', "homepage"], ['../'])
-        self.assertEqual(get_links('package'), {'test'})
+        self.assertEqual(get_urls('package'), {'test'})
 
     @patch('pep438.core.requests.get')
     def test_duplicate_urls(self, get):
         get.side_effect = lambda *args: self.get_response(
             ['test', "homepage"], ['../'], ['test', "download"])
-        self.assertEqual(get_links('package'), {'test'})
+        self.assertEqual(get_urls('package'), {'test'})
 
     @patch('pep438.core.requests.get')
     def test_wrong_rel(self, get):
         get.side_effect = lambda *args: self.get_response(
             ['test', "internal"], ['../'], ['test'])
-        self.assertEqual(get_links('package'), set([]))
+        self.assertEqual(get_urls('package'), set([]))
 
 
 class CommandLineTests(unittest.TestCase):
 
     def setUp(self):
-        get_links_patcher = patch('pep438.main.get_links')
-        self.get_links = get_links_patcher.start()
-        self.addCleanup(get_links_patcher.stop)
+        get_urls_patcher = patch('pep438.main.get_urls')
+        self.get_urls = get_urls_patcher.start()
+        self.addCleanup(get_urls_patcher.stop)
         valid_package_patcher = patch('pep438.main.valid_package')
         self.valid_package = valid_package_patcher.start()
         self.addCleanup(valid_package_patcher.stop)
         self.valid_package.side_effect = lambda p: True
-        self.get_links.side_effect = lambda p: []
+        self.get_urls.side_effect = lambda p: []
 
     def test_valid_package(self):
         sys.argv = ['pep438', 'p1', 'p2']
         with patch_io() as new:
             main()
             self.assertEqual(self.valid_package.call_count, 2)
-            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(self.get_urls.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2713 p1: 0 links\n\u2713 p2: 0 links\n")
+                             "\u2713 p1: 0 URLs\n\u2713 p2: 0 URLs\n")
 
     def test_stdin(self):
         sys.argv = ['pep438']
@@ -130,31 +130,31 @@ class CommandLineTests(unittest.TestCase):
             new.stdin.seek(0)
             main()
             self.assertEqual(self.valid_package.call_count, 2)
-            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(self.get_urls.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2713 p1: 0 links\n\u2713 p2: 0 links\n")
+                             "\u2713 p1: 0 URLs\n\u2713 p2: 0 URLs\n")
 
-    def test_links_found(self):
+    def test_urls_found(self):
         sys.argv = ['pep438', 'p1', 'p2']
-        self.get_links.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
+        self.get_urls.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
         with patch_io() as new:
             main()
             self.assertEqual(self.valid_package.call_count, 2)
-            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(self.get_urls.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2717 p1: 2 links\n\u2713 p2: 0 links\n")
+                             "\u2717 p1: 2 URLs\n\u2713 p2: 0 URLs\n")
 
     def test_errors_only(self):
         sys.argv = ['pep438', '--errors-only', 'p1', 'p2']
-        self.get_links.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
+        self.get_urls.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
         with patch_io() as new:
             main()
             self.assertEqual(self.valid_package.call_count, 2)
-            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(self.get_urls.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
-            self.assertEqual(new.stdout.getvalue(), "\u2717 p1: 2 links\n")
+            self.assertEqual(new.stdout.getvalue(), "\u2717 p1: 2 URLs\n")
 
     def test_invalid_package(self):
         self.valid_package.side_effect = lambda p: p != 'invalid'
@@ -162,11 +162,11 @@ class CommandLineTests(unittest.TestCase):
         with patch_io() as new:
             main()
             self.assertEqual(self.valid_package.call_count, 2)
-            self.assertEqual(self.get_links.call_count, 1)
+            self.assertEqual(self.get_urls.call_count, 1)
             self.assertEqual(new.stderr.getvalue(),
                              "\u26a0 invalid: not found on PyPI\n")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2713 valid: 0 links\n")
+                             "\u2713 valid: 0 URLs\n")
 
     @patch('pep438.main.get_pypi_user_packages')
     def test_pypi_user(self, user_packages):
@@ -176,8 +176,8 @@ class CommandLineTests(unittest.TestCase):
             main()
             user_packages.assert_called_once_with('testuser')
             self.valid_package.assert_called_once_with('p1')
-            self.get_links.called_once_with('p1')
-            self.assertEqual(new.stdout.getvalue(), "\u2713 p1: 0 links\n")
+            self.get_urls.called_once_with('p1')
+            self.assertEqual(new.stdout.getvalue(), "\u2713 p1: 0 URLs\n")
 
     def test_version(self):
         for args in (['pep438', '-v'], ['pep438', '--version']):

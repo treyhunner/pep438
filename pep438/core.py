@@ -15,14 +15,14 @@ def valid_package(package_name):
     return response.status_code != 404
 
 
-def get_links(package_name):
-    """Return list of links on package's PyPI page"""
+def get_urls(package_name):
+    """Return list of URLs on package's PyPI page that would be crawled"""
     response = requests.get('https://pypi.python.org/simple/%s' % package_name)
     response.raise_for_status()
     page = lxml.html.fromstring(response.content)
-    external_links = {link.get('href') for link in page.xpath('//a')
-                      if link.get('rel') in ("homepage", "download")}
-    return external_links
+    crawled_urls = {link.get('href') for link in page.xpath('//a')
+                    if link.get('rel') in ("homepage", "download")}
+    return crawled_urls
 
 
 def get_pypi_packages(fileobj):

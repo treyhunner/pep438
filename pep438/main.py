@@ -9,7 +9,7 @@ from clint.textui.core import STDOUT, STDERR
 from clint.textui.colored import green, red, blue
 
 from . import __version__
-from .core import (get_links, get_pypi_packages, valid_package,
+from .core import (get_urls, get_pypi_packages, valid_package,
                    get_pypi_user_packages)
 
 
@@ -92,10 +92,10 @@ def main():
 
     for package in packages:
         if valid_package(package):
-            links = get_links(package)
-            symbol = red('\u2717') if links else green('\u2713')
-            msg = "%s %s: %s links" % (symbol, blue(package), len(links))
-            if links or not show_only_errors:
+            urls = get_urls(package)
+            symbol = red('\u2717') if urls else green('\u2713')
+            msg = "%s %s: %s URLs" % (symbol, blue(package), len(urls))
+            if urls or not show_only_errors:
                 print(msg)
         else:
             print("%s %s: not found on PyPI" % (red('\u26a0'), blue(package)),

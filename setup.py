@@ -38,5 +38,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
     ],
+    tests_require=["mock==1.0.1"],
     test_suite='test_pep438',
 )

@@ -46,6 +46,21 @@ Check requirements file:
     ✓ django-simple-history: 0 links
     ✓ django-email-log: 0 links
 
+Check packages of a pypi user:
+
+.. code-block:: bash
+
+   $ pep438 -u treyhunner
+   ✓ Pycco: 0 links
+   ✓ Pycco: 0 links
+   ✓ EditorConfig: 0 links
+   ✓ names: 0 links
+   ✓ django-simple-history: 0 links
+   ✓ django-localflavor-us: 0 links
+   ✓ django-email-log: 0 links
+   ✓ django-relatives: 0 links
+   ✓ pep438: 0 links
+
 Check piped input:
 
 .. code-block:: bash
@@ -74,3 +89,4 @@ This project is released under an `MIT License`_.
 .. _mit license: http://th.mit-license.org/2013
 .. _available on PyPI: http://pypi.python.org/pypi/pep438/
 .. _online pep 438 checker: http://pypi-externals.caremad.io/
+

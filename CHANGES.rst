@@ -7,6 +7,7 @@ tip (unreleased)
 - Add ``--errors-only`` flag for only displaying problems
 - Add ``--user`` flag for showing all packages from a given PyPI user
 - Fix dependency ``reqfile-parser`` is now ``requirements-parser``
+- Fix incorrect link counts and count URLs instead
 
 0.3.0
 -----

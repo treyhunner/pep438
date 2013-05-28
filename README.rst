@@ -58,6 +58,13 @@ Check piped input:
     ✓ django-email-log: 0 links
 
 
+Contributing
+------------
+
+Pull requests are welcome.  Please read the CONTRIBUTING file for tips on
+submitting pull requests.
+
+
 License
 -------
 

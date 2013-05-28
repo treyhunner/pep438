@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals
 import unittest
 import sys
 from io import StringIO
@@ -61,6 +62,31 @@ class TestValidPackage(unittest.TestCase):
 
 
 class CommandLineTests(unittest.TestCase):
+
+    @patch('pep438.main.get_links')
+    @patch('pep438.main.valid_package')
+    def test_valid_package(self, valid_package, get_links):
+        valid_package.new_callable = lambda p: True
+        get_links.new_callable = []
+        sys.argv = ['pep438', 'p1', 'p2']
+        with patch_io() as new:
+            main()
+            self.assertEqual(new.stderr.getvalue(), "")
+            self.assertEqual(new.stdout.getvalue(),
+                             "\u2717 p1: 0 links\n\u2717 p2: 0 links\n")
+
+    @patch('pep438.main.get_links')
+    @patch('pep438.main.valid_package')
+    def test_invalid_package(self, valid_package, get_links):
+        valid_package.side_effect = lambda p: p != 'invalid'
+        get_links.new_callable = []
+        sys.argv = ['pep438', 'valid', 'invalid']
+        with patch_io() as new:
+            main()
+            self.assertEqual(new.stderr.getvalue(),
+                             "\u2717 invalid: not found on PyPI\n")
+            self.assertEqual(new.stdout.getvalue(),
+                             "\u2717 valid: 0 links\n")
 
     def test_version(self):
         for args in (['pep438', '-v'], ['pep438', '--version']):

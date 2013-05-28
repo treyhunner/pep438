@@ -124,7 +124,7 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(self.valid_package.call_count, 2)
             self.assertEqual(self.get_links.call_count, 1)
             self.assertEqual(new.stderr.getvalue(),
-                             "\u2717 invalid: not found on PyPI\n")
+                             "\u26a0 invalid: not found on PyPI\n")
             self.assertEqual(new.stdout.getvalue(),
                              "\u2713 valid: 0 links\n")
 

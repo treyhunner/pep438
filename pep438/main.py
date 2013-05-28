@@ -94,6 +94,5 @@ def main():
             if links or not show_only_errors:
                 print(msg)
         else:
-            symbol = red('\u2717')
-            print("%s %s: not found on PyPI" % (symbol, blue(package)),
+            print("%s %s: not found on PyPI" % (red('\u26a0'), blue(package)),
                   file=sys.stderr)

@@ -6,6 +6,14 @@ import lxml.html
 from reqfileparser import parse
 
 
+def valid_package(package_name):
+    """Return bool if package_name is a valid package on PyPI"""
+    response = requests.head('https://pypi.python.org/pypi/%s' % package_name)
+    if response.status_code != 404:
+        response.raise_for_status()
+    return response.status_code != 404
+
+
 def get_links(package_name):
     """Return list of links on package's PyPI page"""
     response = requests.get('https://pypi.python.org/simple/%s' % package_name)

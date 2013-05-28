@@ -3,6 +3,8 @@ import unittest
 import sys
 from io import StringIO
 
+from mock import Mock, patch
+
 from clint.textui import core
 from pep438 import __version__
 from pep438.main import main
@@ -32,6 +34,30 @@ class patch_io(object):
             setattr(sys, stream, getattr(self, 'real_%s' % stream))
         core.STDOUT = self.real_STDOUT
         core.STDERR = self.real_STDERR
+
+
+class TestValidPackage(unittest.TestCase):
+
+    def test_valid_package_200(self):
+        from pep438.core import valid_package
+        config = {'return_value': Mock(status_code=200)}
+        with patch('pep438.core.requests.head', **config):
+            self.assertTrue(valid_package('dummy_package'))
+
+    def test_not_valid_package_404(self):
+        from pep438.core import valid_package
+        config = {'return_value': Mock(status_code=404)}
+        with patch('pep438.core.requests.head', **config):
+            self.assertFalse(valid_package('dummy_package'))
+
+    def test_valid_package_raises_HTTPError(self):
+        from requests import HTTPError
+        from pep438.core import valid_package
+        response = Mock(status_code=500)
+        response.raise_for_status = Mock(side_effect=HTTPError())
+        config = {'return_value': response}
+        with patch('pep438.core.requests.head', **config):
+            self.assertRaises(HTTPError, valid_package, 'dummy_package')
 
 
 class CommandLineTests(unittest.TestCase):

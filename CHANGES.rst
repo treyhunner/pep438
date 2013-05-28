@@ -1,8 +1,8 @@
 Changes
 =======
 
-tip (unreleased)
-----------------
+0.4.0
+-----
 
 - Add ``--errors-only`` flag for only displaying problems
 - Add ``--user`` flag for showing all packages from a given PyPI user

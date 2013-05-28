@@ -20,8 +20,8 @@ def get_links(package_name):
     response = requests.get('https://pypi.python.org/simple/%s' % package_name)
     response.raise_for_status()
     page = lxml.html.fromstring(response.content)
-    external_links = [link for link in page.xpath('//a')
-                      if not link.get('href').startswith('../')]
+    external_links = {link.get('href') for link in page.xpath('//a')
+                      if link.get('rel') in ("homepage", "download")}
     return external_links
 
 

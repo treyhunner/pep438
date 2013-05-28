@@ -9,6 +9,7 @@ from mock import Mock, patch
 from clint.textui import core
 from pep438 import __version__
 from pep438.main import main
+from pep438.core import get_links
 
 
 class patch_io(object):
@@ -59,6 +60,45 @@ class TestValidPackage(unittest.TestCase):
         config = {'return_value': response}
         with patch('pep438.core.requests.head', **config):
             self.assertRaises(HTTPError, valid_package, 'dummy_package')
+
+
+class TestGetLinks(unittest.TestCase):
+
+    def get_link(self, href, rel=None):
+        if rel:
+            return '<a href="%s" rel="%s">link text</a>' % (href, rel)
+        else:
+            return '<a href="%s">link text</a>' % href
+
+    def get_response(self, *links):
+        response = Mock(status_code=200)
+        response.content = '<html>%s</html>' % ''.join(
+            self.get_link(*d) for d in links)
+        return response
+
+    @patch('pep438.core.requests.get')
+    def test_download_link(self, get):
+        get.side_effect = lambda *args: self.get_response(
+            ['test', "download"], ['../'])
+        self.assertEqual(get_links('package'), {'test'})
+
+    @patch('pep438.core.requests.get')
+    def test_homepage_link(self, get):
+        get.side_effect = lambda *args: self.get_response(
+            ['test', "homepage"], ['../'])
+        self.assertEqual(get_links('package'), {'test'})
+
+    @patch('pep438.core.requests.get')
+    def test_duplicate_urls(self, get):
+        get.side_effect = lambda *args: self.get_response(
+            ['test', "homepage"], ['../'], ['test', "download"])
+        self.assertEqual(get_links('package'), {'test'})
+
+    @patch('pep438.core.requests.get')
+    def test_wrong_rel(self, get):
+        get.side_effect = lambda *args: self.get_response(
+            ['test', "internal"], ['../'], ['test'])
+        self.assertEqual(get_links('package'), set([]))
 
 
 class CommandLineTests(unittest.TestCase):

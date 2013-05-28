@@ -57,7 +57,6 @@ def main():
 
     packages = []
     args = sys.argv[1:]
-    input_lines = None and piped_in()
 
     try:
         opts, pkgs = getopt(args, "vhr:", ["version", "help", "requirement"])

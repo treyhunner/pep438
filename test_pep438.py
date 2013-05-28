@@ -128,6 +128,17 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(new.stdout.getvalue(),
                              "\u2713 valid: 0 links\n")
 
+    @patch('pep438.main.get_pypi_user_packages')
+    def test_pypi_user(self, user_packages):
+        user_packages.side_effect = lambda u: ['p1']
+        sys.argv = ['pep438', '-u', 'testuser']
+        with patch_io() as new:
+            main()
+            user_packages.assert_called_once_with('testuser')
+            self.valid_package.assert_called_once_with('p1')
+            self.get_links.called_once_with('p1')
+            self.assertEqual(new.stdout.getvalue(), "\u2713 p1: 0 links\n")
+
     def test_version(self):
         for args in (['pep438', '-v'], ['pep438', '--version']):
             with patch_io() as new:

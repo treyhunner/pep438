@@ -2,7 +2,6 @@
 from __future__ import print_function, unicode_literals
 import sys
 from getopt import getopt, GetoptError
-import xmlrpclib
 
 from clint import piped_in
 from clint.textui import puts, columns, indent
@@ -10,7 +9,8 @@ from clint.textui.core import STDOUT, STDERR
 from clint.textui.colored import green, red, blue
 
 from . import __version__
-from .core import get_links, get_pypi_packages, valid_package
+from .core import (get_links, get_pypi_packages, valid_package,
+                   get_pypi_user_packages)
 
 
 def version():
@@ -37,10 +37,6 @@ def usage(error=False):
         max_len = max(len(option) for option, _ in options)
         for option, description in options:
             puts(columns([option, max_len + 5], [description, 99]), stream=out)
-
-def get_pypi_user_packages(user):
-    client = xmlrpclib.ServerProxy('https://pypi.python.org/pypi')
-    return [x[1] for x in client.user_packages(user)]
 
 
 def process_options(options):
@@ -78,7 +74,7 @@ def main():
 
     try:
         opts, pkgs = getopt(args, "vhr:u:e", ["version", "help", "requirement",
-                                             "user", "errors-only"])
+                                              "user", "errors-only"])
     except GetoptError as e:
         puts(str(e), stream=STDERR)
         usage(error=True)

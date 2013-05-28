@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import requests
+import xmlrpclib
 import lxml.html
 from reqfileparser import parse
 
@@ -27,3 +28,8 @@ def get_links(package_name):
 def get_pypi_packages(fileobj):
     """Return all PyPI-hosted packages from file-like object"""
     return [p['name'] for p in parse(fileobj) if not p.get('uri')]
+
+
+def get_pypi_user_packages(user):
+    client = xmlrpclib.ServerProxy('https://pypi.python.org/pypi')
+    return [x[1] for x in client.user_packages(user)]

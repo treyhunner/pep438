@@ -63,11 +63,17 @@ class TestValidPackage(unittest.TestCase):
 
 class CommandLineTests(unittest.TestCase):
 
-    @patch('pep438.main.get_links')
-    @patch('pep438.main.valid_package')
-    def test_valid_package(self, valid_package, get_links):
-        valid_package.new_callable = lambda p: True
-        get_links.new_callable = []
+    def setUp(self):
+        get_links_patcher = patch('pep438.main.get_links')
+        self.get_links = get_links_patcher.start()
+        self.addCleanup(get_links_patcher.stop)
+        valid_package_patcher = patch('pep438.main.valid_package')
+        self.valid_package = valid_package_patcher.start()
+        self.addCleanup(valid_package_patcher.stop)
+
+    def test_valid_package(self):
+        self.valid_package.new_callable = lambda p: True
+        self.get_links.new_callable = []
         sys.argv = ['pep438', 'p1', 'p2']
         with patch_io() as new:
             main()
@@ -75,11 +81,9 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(new.stdout.getvalue(),
                              "\u2717 p1: 0 links\n\u2717 p2: 0 links\n")
 
-    @patch('pep438.main.get_links')
-    @patch('pep438.main.valid_package')
-    def test_invalid_package(self, valid_package, get_links):
-        valid_package.side_effect = lambda p: p != 'invalid'
-        get_links.new_callable = []
+    def test_invalid_package(self):
+        self.valid_package.side_effect = lambda p: p != 'invalid'
+        self.get_links.new_callable = []
         sys.argv = ['pep438', 'valid', 'invalid']
         with patch_io() as new:
             main()

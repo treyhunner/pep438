@@ -95,6 +95,27 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(new.stdout.getvalue(),
                              "\u2713 p1: 0 links\n\u2713 p2: 0 links\n")
 
+    def test_links_found(self):
+        sys.argv = ['pep438', 'p1', 'p2']
+        self.get_links.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
+        with patch_io() as new:
+            main()
+            self.assertEqual(self.valid_package.call_count, 2)
+            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(new.stderr.getvalue(), "")
+            self.assertEqual(new.stdout.getvalue(),
+                             "\u2717 p1: 2 links\n\u2713 p2: 0 links\n")
+
+    def test_errors_only(self):
+        sys.argv = ['pep438', '--errors-only', 'p1', 'p2']
+        self.get_links.side_effect = lambda p: ['1', '2'] if p == 'p1' else []
+        with patch_io() as new:
+            main()
+            self.assertEqual(self.valid_package.call_count, 2)
+            self.assertEqual(self.get_links.call_count, 2)
+            self.assertEqual(new.stderr.getvalue(), "")
+            self.assertEqual(new.stdout.getvalue(), "\u2717 p1: 2 links\n")
+
     def test_invalid_package(self):
         self.valid_package.side_effect = lambda p: p != 'invalid'
         sys.argv = ['pep438', 'valid', 'invalid']

@@ -22,6 +22,7 @@ def usage(error=False):
     options = [
         ("-h, --help", "Print this help message"),
         ("-v, --version", "Display version information"),
+        ("-e, --errors-only", "Display errors only"),
     ]
 
     puts("\nUsage:")
@@ -53,13 +54,23 @@ def process_options(options):
     return packages
 
 
+def get_packages_from_stdin():
+    """Return packages found from standard input"""
+    input_lines = piped_in()
+    if input_lines is not None:
+        return get_pypi_packages(input_lines)
+    else:
+        return []
+
+
 def main():
 
     packages = []
     args = sys.argv[1:]
 
     try:
-        opts, pkgs = getopt(args, "vhr:", ["version", "help", "requirement"])
+        opts, pkgs = getopt(args, "vhr:e", ["version", "help", "requirement",
+                                            "errors-only"])
     except GetoptError as e:
         puts(str(e), stream=STDERR)
         usage(error=True)
@@ -67,12 +78,11 @@ def main():
 
     packages += pkgs
     packages += process_options(opts)
+    packages += get_packages_from_stdin()
+    show_only_errors = ('-e', '') in opts or ('--errors-only', '') in opts
 
-    if input_lines is not None:
-        # Add packages found from standard input
-        packages += get_pypi_packages(input_lines)
-    elif not args:
-        # Return error if no arguments given
+    if not packages:
+        # Return error if no packages found
         usage(error=True)
         sys.exit(2)
 
@@ -81,7 +91,8 @@ def main():
             links = get_links(package)
             symbol = red('\u2717') if links else green('\u2713')
             msg = "%s %s: %s links" % (symbol, blue(package), len(links))
-            print(msg)
+            if links or not show_only_errors:
+                print(msg)
         else:
             symbol = red('\u2717')
             print("%s %s: not found on PyPI" % (symbol, blue(package)),

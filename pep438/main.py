@@ -85,5 +85,5 @@ def main():
             print(msg)
         else:
             symbol = red('\u2717')
-            msg = "%s %s: not found on PyPI" % (symbol, blue(package))
-            sys.stderr.write(msg)
+            print("%s %s: not found on PyPI" % (symbol, blue(package)),
+                  file=sys.stderr)

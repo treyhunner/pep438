@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import requests
 import xmlrpclib
 import lxml.html
-from reqfileparser import parse
+from requirements import parse
 
 
 def valid_package(package_name):

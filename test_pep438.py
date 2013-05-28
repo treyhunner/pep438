@@ -70,8 +70,8 @@ class CommandLineTests(unittest.TestCase):
         valid_package_patcher = patch('pep438.main.valid_package')
         self.valid_package = valid_package_patcher.start()
         self.addCleanup(valid_package_patcher.stop)
-        self.valid_package.new_callable = lambda p: True
-        self.get_links.new_callable = []
+        self.valid_package.side_effect = lambda p: True
+        self.get_links.side_effect = lambda p: []
 
     def test_valid_package(self):
         sys.argv = ['pep438', 'p1', 'p2']
@@ -81,7 +81,7 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(self.get_links.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2717 p1: 0 links\n\u2717 p2: 0 links\n")
+                             "\u2713 p1: 0 links\n\u2713 p2: 0 links\n")
 
     def test_stdin(self):
         sys.argv = ['pep438']
@@ -93,7 +93,7 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(self.get_links.call_count, 2)
             self.assertEqual(new.stderr.getvalue(), "")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2717 p1: 0 links\n\u2717 p2: 0 links\n")
+                             "\u2713 p1: 0 links\n\u2713 p2: 0 links\n")
 
     def test_invalid_package(self):
         self.valid_package.side_effect = lambda p: p != 'invalid'
@@ -105,7 +105,7 @@ class CommandLineTests(unittest.TestCase):
             self.assertEqual(new.stderr.getvalue(),
                              "\u2717 invalid: not found on PyPI\n")
             self.assertEqual(new.stdout.getvalue(),
-                             "\u2717 valid: 0 links\n")
+                             "\u2713 valid: 0 links\n")
 
     def test_version(self):
         for args in (['pep438', '-v'], ['pep438', '--version']):

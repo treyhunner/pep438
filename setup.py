@@ -11,7 +11,6 @@ setup(
     long_description='\n\n'.join((
         open('README.rst').read(),
         open('CHANGES.rst').read(),
-        open('CONTRIBUTING.rst').read(),
     )),
     license=open('LICENSE').read(),
     packages=find_packages(),

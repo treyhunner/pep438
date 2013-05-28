@@ -1,10 +1,11 @@
 Changes
 =======
 
-tip (unreleased)
-----------------
+0.3.0
+-----
 
 - Improve error message when package not hosted on PyPI
+- Improve README
 
 0.2.0
 -----

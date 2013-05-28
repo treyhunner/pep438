@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 
 import requests
-import xmlrpclib
+try:
+    import xmlrpclib
+except:
+    import xmlrpc.client as xmlprclib
 import lxml.html
 from requirements import parse
 

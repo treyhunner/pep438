@@ -17,7 +17,7 @@ setup(
     py_modules=['pep438'],
     include_package_data=True,
     install_requires=[
-        'requirements-parser',
+        'requirements-parser==0.0.4',
         'clint',
         'requests',
         'lxml',

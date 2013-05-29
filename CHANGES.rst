@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.5.0
+-----
+
+- Pin requirements-parser to version 0.4.0
+
 0.4.0
 -----
 

@@ -5,8 +5,8 @@ import requests
 try:
     import xmlrpclib
 except:
-    import xmlrpc.client as xmlprclib
-import lxml.html
+    import xmlrpc.client as xmlrpclib  # noqa
+from xml.etree import ElementTree
 from requirements import parse
 
 
@@ -22,8 +22,8 @@ def get_urls(package_name):
     """Return list of URLs on package's PyPI page that would be crawled"""
     response = requests.get('https://pypi.python.org/simple/%s' % package_name)
     response.raise_for_status()
-    page = lxml.html.fromstring(response.content)
-    crawled_urls = {link.get('href') for link in page.xpath('//a')
+    page = ElementTree.fromstring(response.content)
+    crawled_urls = {link.get('href') for link in page.findall('.//a')
                     if link.get('rel') in ("homepage", "download")}
     return crawled_urls
 

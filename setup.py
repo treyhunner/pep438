@@ -20,7 +20,6 @@ setup(
         'requirements-parser==0.0.4',
         'clint',
         'requests',
-        'lxml',
     ],
     entry_points={
         'console_scripts': [

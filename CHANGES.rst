@@ -5,6 +5,7 @@ Changes
 -----
 
 - Pin requirements-parser to version 0.4.0
+- Replaced lxml with xml.etree.ElementTree
 
 0.4.0
 -----

@@ -24,6 +24,7 @@ def usage(error=False):
         ("-h, --help", "Print this help message"),
         ("-v, --version", "Display version information"),
         ("-e, --errors-only", "Display errors only"),
+        ("-u, --user", "Check packages for given PyPI user"),
     ]
 
     puts("\nUsage:")

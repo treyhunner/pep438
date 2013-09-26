@@ -88,3 +88,9 @@ This project is released under an `MIT License`_.
 .. _available on PyPI: http://pypi.python.org/pypi/pep438/
 .. _online pep 438 checker: http://pypi-externals.caremad.io/
 
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/treyhunner/pep438/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+

@@ -30,7 +30,7 @@ def get_urls(package_name):
 
 def get_pypi_packages(fileobj):
     """Return all PyPI-hosted packages from file-like object"""
-    return [p['name'] for p in parse(fileobj) if not p.get('uri')]
+    return [p['name'] for p in parse(fileobj) if not p['uri']]
 
 
 def get_pypi_user_packages(user):

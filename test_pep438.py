@@ -9,7 +9,7 @@ from mock import Mock, patch
 from clint.textui import core
 from pep438 import __version__
 from pep438.main import main
-from pep438.core import get_urls
+from pep438.core import get_urls, get_pypi_packages
 
 
 class patch_io(object):
@@ -99,6 +99,27 @@ class TestGetURLs(unittest.TestCase):
         get.side_effect = lambda *args: self.get_response(
             ['test', "internal"], ['../'], ['test'])
         self.assertEqual(get_urls('package'), set([]))
+
+
+class TestGetPyPIPackages(unittest.TestCase):
+
+    def test_with_version(self):
+        f = StringIO()
+        f.write('Django==1.4.5')
+        f.seek(0)
+        self.assertEqual(get_pypi_packages(f), ['Django'])
+
+    def test_no_version(self):
+        f = StringIO()
+        f.write('Django')
+        f.seek(0)
+        self.assertEqual(get_pypi_packages(f), ['Django'])
+
+    def test_url(self):
+        f = StringIO()
+        f.write('https://github.com/django/django/archive/master.zip')
+        f.seek(0)
+        self.assertEqual(get_pypi_packages(f), [])
 
 
 class CommandLineTests(unittest.TestCase):

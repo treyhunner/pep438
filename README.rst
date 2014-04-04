@@ -7,6 +7,8 @@ pep438
    :target: https://coveralls.io/r/treyhunner/pep438
 .. image:: https://pypip.in/v/pep438/badge.png
    :target: https://crate.io/packages/pep438
+.. image:: https://requires.io/github/treyhunner/pep438/requirements.png?branch=master
+   :target: https://requires.io/github/treyhunner/pep438/requirements/?branch=master
 
 
 Check packages in your requirements file for proper usage of the `PEP 438`_ tools.
